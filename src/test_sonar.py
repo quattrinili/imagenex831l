@@ -1,3 +1,14 @@
+#!/usr/bin/env python
+
+"""
+  Author: Sharmin Rahman
+  Affiliation: AFRL - University of South Carolina
+  Date: 12/22/2016
+
+  Description:
+  Test of sonar.
+"""
+
 from imagenex831l import Imagenex831L
 
 s = Imagenex831L()

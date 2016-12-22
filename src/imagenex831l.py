@@ -3,7 +3,7 @@
 """
   Author: Alberto Quattrini Li
   Affiliation: AFRL - University of South Carolina
-  Date: 06/20/2016
+  Date: 12/22/2016
 
   Description:
   Class for interacting with Imagenex 831l.
@@ -13,6 +13,8 @@ import socket # For interacting with the sensor with TCP/IP.
 import struct # Preparing the packets to be sent.
 
 import numpy
+
+from utilities import *
 
 # MACROS
 NUM_BITS_IN_BYTE = 8
@@ -33,7 +35,7 @@ SONAR_MOTOR_MODE = 0 # byte 24 (ID for value).
 SONAR_FREQUENCY = 20 # byte 25 (ID for the value).
 
 
-# Values for switch data command (see 831l documentation).
+# Values for switch data command (see 831L documentation).
 NUM_BYTES = 27 # Number of bytes for request.
 RESERVED_VALUE = 0x00 # Value for reserved bytes.
 BYTE_0 = 0xfe # Switch data header byte 0.
@@ -65,6 +67,10 @@ BYTE_24 = RESERVED_VALUE
 BYTE_25 = range(80, 120+1) # 2.15 MHz to 2.35 MHz.
 BYTE_26 = 0xFD # Termination byte.
 
+# Values for interpreting response (see 831L documentation).
+ANGLE_PER_BIT = 0.025
+ACCELERATION_PER_BIT = 0.24414
+TWO_COMPLEMENTS_NUM_BITS = 14
 
 # Strings for topics.
 SENSOR_NAME = '831l'
@@ -173,7 +179,7 @@ class Imagenex831L():
     def interpret_data(self, data):
         """Interpret raw data.
         """
-        # TODO(aql) add status, byte 4.
+        # Processing of byte 4: status.
         range_error_flag = bool(data[4] & 0x01)
         frequency_error_flag = bool(data[4] & 0x02)
         sensor_error_flag = bool(data[4] & 0x04)
@@ -212,22 +218,46 @@ class Imagenex831L():
 
         # Processing of bytes 16-17: roll angle.
         roll_angle = ((data[17] &0x3F) <<8) | data[16]
-        # TODO interpret as 0.025 base, 14 bit two complement.
+        roll_angle = twos_complement(roll_angle, TWO_COMPLEMENTS_NUM_BITS)
+        roll_angle = convert_to_weighted_bits(bin(roll_angle), ANGLE_PER_BIT, 
+            num_bits=TWO_COMPLEMENTS_NUM_BITS,
+            least_significant_bit_zero=False)
+        roll_angle_error_alarm_flag = data[17] & 0x04
+        roll_angle_new_data_flag = data[17] & 0x08
         print "roll_angle ", roll_angle
 
         # Processing of bytes 18-19: pitch angle.
         pitch_angle = ((data[19] &0x3F) <<8) | data[18]
-        # TODO interpret as 0.025 base, 14 bit two complement.
+        pitch_angle = twos_complement(pitch_angle, TWO_COMPLEMENTS_NUM_BITS)
+        pitch_angle = convert_to_weighted_bits(bin(pitch_angle), ANGLE_PER_BIT, 
+            num_bits=TWO_COMPLEMENTS_NUM_BITS,
+            least_significant_bit_zero=False)
+        pitch_angle_error_alarm_flag = data[17] & 0x04
+        pitch_angle_new_data_flag = data[17] & 0x08
         print "pitch_angle ", pitch_angle
 
         # Processing of bytes 20-21: roll acceleration.
         roll_acceleration = ((data[21] &0x3F) <<8) | data[20]
-        # TODO interpret as 0.24414 base, 14 bit two complement.
+        roll_acceleration = twos_complement(roll_acceleration, 
+            TWO_COMPLEMENTS_NUM_BITS)
+        roll_acceleration = convert_to_weighted_bits(bin(roll_acceleration), 
+            ACCELERATION_PER_BIT, 
+            num_bits=TWO_COMPLEMENTS_NUM_BITS,
+            least_significant_bit_zero=False)
+        roll_acceleration_error_alarm_flag = data[17] & 0x04
+        roll_acceleration_new_data_flag = data[17] & 0x08
         print "roll_accel ", roll_acceleration
 
         # Processing of bytes 22-23: pitch acceleration.
-        # TODO interpret as 0.24414 base, 14 bit two complement.
         pitch_acceleration = ((data[23] &0x3F) <<8) | data[22]
+        pitch_acceleration = twos_complement(pitch_acceleration, 
+            TWO_COMPLEMENTS_NUM_BITS)
+        pitch_acceleration = convert_to_weighted_bits(bin(pitch_acceleration), 
+            ACCELERATION_PER_BIT, 
+            num_bits=TWO_COMPLEMENTS_NUM_BITS,
+            least_significant_bit_zero=False)
+        pitch_acceleration_error_alarm_flag = data[17] & 0x04
+        pitch_acceleration_new_data_flag = data[17] & 0x08
         print "pitch_accel ", pitch_acceleration
 
         # Processing of echo data. # TODO(aql) IMX
@@ -255,4 +285,3 @@ class Imagenex831L():
     def close_connection(self):
         if self.connection != None:
             self.connection.close()
-            
