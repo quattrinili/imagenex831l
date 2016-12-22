@@ -304,6 +304,9 @@ class Imagenex831L():
         self.sonar_range = config.max_range # byte 3.
         self.step_direction = config.step_direction # byte 5.
         self.start_gain = config.start_gain # byte 8.
+        if config.absorption == 253:
+            # Avoid problems with the end character of the switch command.
+            config.absorption = 252
         self.absorption = config.absorption # byte 10.
         self.step_size = config.step_size # byte 13.
         self.pulse = config.pulse # byte 14.
