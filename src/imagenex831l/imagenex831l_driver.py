@@ -7,6 +7,9 @@
 
   Description:
   Class for interacting with Imagenex 831l.
+
+  TODO Clean the code from macros that are not useful.
+  TODO Make consistent the way values are passed to the message.
 """
 
 import socket # For interacting with the sensor with TCP/IP.
@@ -107,8 +110,8 @@ class Imagenex831L():
         self.step_direction = step_direction # byte 5.
         self.start_gain = start_gain # byte 8.
         self.absorption = absorption # byte 10.
-        self.current_train_angle = 0 # byte 11.
-        self.current_sector_width = 0 # byte 12.
+        self.train_angle = 120 # byte 11.
+        self.sector_width = 120 # byte 12.
         self.step_size = step_size # byte 13.
         self.pulse = pulse # byte 14.
         self.min_range = min_range # byte 15.
@@ -140,8 +143,10 @@ class Imagenex831L():
                 BYTE_9,
                 #BYTE_10[self.absorption],
                 self.absorption,
-                BYTE_11[self.current_train_angle],
-                BYTE_12[self.current_sector_width],
+                #BYTE_11[self.train_angle],
+                self.train_angle,
+                #BYTE_12[self.sector_width],
+                self.sector_width,
                 #BYTE_13[self.step_size],
                 self.step_size,
                 #BYTE_14[self.pulse],
@@ -308,6 +313,10 @@ class Imagenex831L():
             # Avoid problems with the end character of the switch command.
             config.absorption = 252
         self.absorption = config.absorption # byte 10.
+        config.train_angle = my_round(config.train_angle, base=3)
+        self.train_angle = config.train_angle # byte 11.
+        config.sector_width = my_round(config.sector_width, base=3)
+        self.sector_width = config.sector_width # byte 11.
         self.step_size = config.step_size # byte 13.
         self.pulse = config.pulse # byte 14.
         self.min_range = config.min_range # byte 15.
