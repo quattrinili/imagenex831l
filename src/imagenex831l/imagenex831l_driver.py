@@ -164,6 +164,8 @@ class Imagenex831L():
                 BYTE_26
                 )
             self.connection.send(request)
+            if self.step_direction == 1:
+                self.step_direction = 0
 
     def read_data(self):
         """Receive request of data through TCP/IP. TODO(aql) more complete doc.
