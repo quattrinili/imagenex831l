@@ -27,10 +27,10 @@ SONAR_IP_ADDRESS = "192.168.0.5"
 SONAR_PORT = 4040
 SONAR_RANGE = 6 # byte 3 (Key ID for value).
 SONAR_STEP_DIRECTION = 0 # byte 5 (Key ID for value).
-SONAR_START_GAIN = 1 # byte 8 (ID for value).
+SONAR_START_GAIN = 10 # byte 8 (ID for value).
 SONAR_ABSORPTION = 10 # byte 10 (ID for value).
-SONAR_STEP_SIZE = 1 # byte 13 (ID for value).
-SONAR_PULSE = 1 # byte 14 (ID for value).
+SONAR_STEP_SIZE = 3 # byte 13 (ID for value).
+SONAR_PULSE = 10 # byte 14 (ID for value).
 SONAR_MIN_RANGE = 1 # byte 15 (ID for value).
 SONAR_PITCH_ROLL_MODE = 0 # byte 21 (ID for value).
 SONAR_PROFILE_MODE = 0 # byte 23 (ID for value).
@@ -297,8 +297,6 @@ class Imagenex831L():
             message.pitch_angle = pitch_angle
             message.roll_acceleration = roll_acceleration
             message.pitch_acceleration = pitch_acceleration
-	
-	print "message", message
 
         """TODO(aql) check what information to save in the range message.
         # REP117 implementation http://www.ros.org/reps/rep-0117.html.
@@ -333,7 +331,7 @@ class Imagenex831L():
         config.train_angle = my_round(config.train_angle, base=3)
         self.train_angle = config.train_angle # byte 11.
         config.sector_width = my_round(config.sector_width, base=3)
-        self.sector_width = config.sector_width # byte 11.
+        self.sector_width = config.sector_width # byte 12.
         self.step_size = config.step_size # byte 13.
         self.pulse = config.pulse # byte 14.
         self.min_range = config.min_range # byte 15.
