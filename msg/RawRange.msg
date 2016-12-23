@@ -1,3 +1,3 @@
-#array of wifi msgs
+# Raw data from sonar.
 std_msgs/Header header
-byte[] data
+uint8[] data

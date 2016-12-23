@@ -189,35 +189,38 @@ class Imagenex831L():
 
         return data
 
-    def interpret_data(self, data):
+    def interpret_data(self, data, message=None):
         """Interpret raw data. TODO(aql) more complete doc.
 
 
         Args:
-            data(bytes): raw data from sensor..
+            data(bytes): raw data from sensor.
+            message(ProcessedRange): if not None, it saves the message fields.
         """
         # Processing of byte 4: status.
         range_error_flag = bool(data[4] & 0x01)
         frequency_error_flag = bool(data[4] & 0x02)
-        sensor_error_flag = bool(data[4] & 0x04)
+        internal_error_flag = bool(data[4] & 0x04)
         switches_accepted_flag = bool(data[4] & 0x80)
         print "range_error_flag ", range_error_flag
         print "frequency_error_flag ", frequency_error_flag
-        print "sensor_error_flag ", sensor_error_flag
+        print "sensor_error_flag ", internal_error_flag
         print "switches_accepted_flag ", switches_accepted_flag
 
         # Processing of bytes 5-6: head position; value in degrees (-180, 180)
         head_high_byte = (data[6] & 0x3E)>>1
         head_low_byte = ((data[6] & 0x01)<<7) | (data[5] & 0x7F)
         head_position = (head_high_byte<<8) | head_low_byte 
-        angle = 0.3 * (head_position - 600)
+        head_position = 0.3 * (head_position - 600)
         # step direction: 0 = counter-clockwise, 1 = clockwise.
         step_direction = (data[6] & 0x40)>>6
-        print "angle ", (angle, step_direction)
+        print "head_position ", (head_position, step_direction)
 
         # byte 7
+        maximum_range = 0
         for max_range, range_id in BYTE_3.iteritems():
             if range_id == data[7]:
+                maximum_range = max_range
                 print "max range ", max_range
 
         # Processing of bytes 8-9: profile range; in centimetres.
@@ -281,7 +284,21 @@ class Imagenex831L():
         ranges = data[32:len(data)-1]  
         print "ranges ", ranges
 
-        return ranges
+        if message:
+            message.intensity = ranges
+            message.range_error = range_error_flag
+            message.frequency_error = frequency_error_flag
+            message.internal_error = internal_error_flag
+            message.switches_accepted = switches_accepted_flag
+
+            message.head_position = head_position
+            message.step_direction = step_direction
+            message.max_range = maximum_range
+            message.profile_range = profile_range
+            message.roll_angle = roll_angle
+            message.pitch_angle = pitch_angle
+            message.roll_acceleration = roll_acceleration
+            message.pitch_acceleration = pitch_acceleration
 
         """TODO(aql) check what information to save in the range message.
         # REP117 implementation http://www.ros.org/reps/rep-0117.html.

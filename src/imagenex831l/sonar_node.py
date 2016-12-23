@@ -21,7 +21,7 @@ import rospy
 from dynamic_reconfigure.server import Server
 from imagenex831l.cfg import Imagenex831LConfig
 
-from sensor_msgs.msg import Range
+from imagenex831l.msg import ProcessedRange
 from imagenex831l.msg import RawRange
 
 # Strings for topics.
@@ -52,7 +52,7 @@ def publish_data_from_sonar_sensor():
     # Instantiating publishers.
     range_pub = rospy.Publisher(
         TOPIC_SEPARATOR.join([SENSOR_NAME, SONAR_TOPIC_NAME]),
-        Range, queue_size=10)
+        ProcessedRange, queue_size=10)
     range_raw_pub = rospy.Publisher(
         TOPIC_SEPARATOR.join([SENSOR_NAME, SONAR_RAW_TOPIC_NAME]),
         RawRange, queue_size=10)
@@ -76,9 +76,9 @@ def publish_data_from_sonar_sensor():
     while not rospy.is_shutdown():
         # Creation of the messages.
         
-        sonar_msg = Range()
+        sonar_msg = ProcessedRange()
         sonar_raw_msg = RawRange()
-        """
+
         try:
             # Reading of the sensor.
             sensor.send_request()
@@ -103,7 +103,7 @@ def publish_data_from_sonar_sensor():
         except:
             # Error when reading data.
             rospy.logerr("Exception when reading sonar data.")
-        """
+
         # Keep the frequency.
         node.sleep()
 
