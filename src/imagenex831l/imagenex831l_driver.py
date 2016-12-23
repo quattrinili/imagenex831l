@@ -44,8 +44,8 @@ RESERVED_VALUE = 0x00 # Value for reserved bytes.
 BYTE_0 = 0xfe # Switch data header byte 0.
 BYTE_1 = 0x44 # Switch data header byte 1.
 BYTE_2 = RESERVED_VALUE
-#BYTE_3 = {0.125: 2, 0.25: 4, 0.5: 6, 0.75: 8, # key: range in m. 
-#    1: 10, 2: 20, 3: 30, 4: 40, 5: 50, 6: 60} # value: decimal for byte 3.
+BYTE_3 = {0.125: 2, 0.25: 4, 0.5: 6, 0.75: 8, # key: range in m. 
+    1: 10, 2: 20, 3: 30, 4: 40, 5: 50, 6: 60} # value: decimal for byte 3.
 BYTE_4 = RESERVED_VALUE
 BYTE_5 = {0: 0x00, 1: 64} # 0: normal operation, 1: reverse step direction. TODO check if it's the correct order.
 BYTE_6 = RESERVED_VALUE
@@ -297,6 +297,8 @@ class Imagenex831L():
             message.pitch_angle = pitch_angle
             message.roll_acceleration = roll_acceleration
             message.pitch_acceleration = pitch_acceleration
+	
+	print "message", message
 
         """TODO(aql) check what information to save in the range message.
         # REP117 implementation http://www.ros.org/reps/rep-0117.html.

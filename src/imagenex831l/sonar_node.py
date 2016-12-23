@@ -95,6 +95,7 @@ def publish_data_from_sonar_sensor():
 
             sonar_msg.header.stamp = time
             sonar_msg.header.frame_id = "sonar"
+            sensor.interpret_data(raw_data, sonar_msg)
 
             # Publish ROS messages.
             range_raw_pub.publish(sonar_raw_msg)
