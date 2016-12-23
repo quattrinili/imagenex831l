@@ -97,12 +97,10 @@ class Imagenex831L():
         """
         # TCP/IP connection.
         self.connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        """
         try:
             self.connection.connect((ip_address, port))
         except socket.error, msg:
             self.connection = None
-        """
 
         # Setting parameters.
         self.request_format = str(NUM_BYTES) + "B"
