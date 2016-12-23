@@ -25,7 +25,7 @@ NUM_BITS_IN_BYTE = 8
 # Sonar default values.
 SONAR_IP_ADDRESS = "192.168.0.5"
 SONAR_PORT = 4040
-SONAR_RANGE = 6 # byte 3 (Key ID for value).
+SONAR_RANGE = 10 # byte 3 (Key ID for value).
 SONAR_STEP_DIRECTION = 0 # byte 5 (Key ID for value).
 SONAR_START_GAIN = 10 # byte 8 (ID for value).
 SONAR_ABSORPTION = 10 # byte 10 (ID for value).
