@@ -325,6 +325,9 @@ class Imagenex831L():
         """
         self.sonar_range = config.max_range # byte 3.
         self.step_direction = config.step_direction # byte 5.
+        # Ensure that step_direction returns to 0 as it is one-time bit to
+        # reverse the direction of the rotating transducer.
+        config.step_direction = 0
         self.start_gain = config.start_gain # byte 8.
         if config.absorption == 253:
             # Avoid problems with the end character of the switch command.
