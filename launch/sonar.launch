@@ -1,0 +1,3 @@
+<launch>
+  <node pkg="imagenex831l" type="sonar_node.py" name="sonar"/>
+</launch>
