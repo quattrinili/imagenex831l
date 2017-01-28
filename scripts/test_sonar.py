@@ -9,7 +9,7 @@
   Test of sonar.
 """
 
-from imagenex831l_driver import Imagenex831L
+from imagenex831l.imagenex831l_driver import Imagenex831L
 
 s = Imagenex831L()
 
