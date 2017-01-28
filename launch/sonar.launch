@@ -1,3 +1,3 @@
 <launch>
-  <node pkg="imagenex831l" type="sonar_node.py" name="sonar"/>
+  <node pkg="imagenex831l" type="sonar_node.py" name="sonar" respawn="true"/>
 </launch>
