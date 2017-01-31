@@ -30,6 +30,7 @@ SONAR_RAW_TOPIC_NAME = 'range_raw'
 # Parameters for node.
 POLL_FREQUENCY = 100 # Frequency for polling data. Note that the lower bound
                     # depends on the actual sensor frequency. TODO frequency depending on range.
+RESET_TIMEOUT = 1 # Timeout (s) to reset node, if no message has been produced.
 # END MACROS.
 
 class SonarNode(object):
@@ -55,6 +56,8 @@ class SonarNode(object):
 
         # Initialize parameter server.
         self.parameter_server = Server(Imagenex831LConfig, self.parameters_callback)
+
+        self.first_exception_time = None
     
     def parameters_callback(self, config, level):
         """Set parameters of the node for dynamic_reconfigure.
@@ -73,16 +76,16 @@ class SonarNode(object):
             
             sonar_msg = ProcessedRange()
             sonar_raw_msg = RawRange()
-
+            current_time = rospy.get_rostime()
             try:
                 # Reading of the sensor.
                 self.sensor.send_request()
                 raw_data = self.sensor.read_data()
 
                 # Populating the messages with the data.
-                time = rospy.get_rostime()
+                
 
-                sonar_raw_msg.header.stamp = time
+                sonar_raw_msg.header.stamp = current_time
                 sonar_raw_msg.header.frame_id = "sonar"
                 sonar_raw_msg.data = raw_data
                 # For logging purpose.
@@ -95,10 +98,16 @@ class SonarNode(object):
                 # Publish ROS messages.
                 self.range_raw_pub.publish(sonar_raw_msg)
                 self.range_pub.publish(sonar_msg)
-
+                if self.first_exception_time:
+                    self.first_exception_time = None
             except:
                 # Error when reading data.
-                rospy.logerr("Exception when reading sonar data.")
+                if self.first_exception_time is None:
+                    rospy.logerr("Exception when reading sonar data.")
+                    self.first_exception_time = current_time
+                else:
+                    if current_time - self.first_exception_time > rospy.Duration(RESET_TIMEOUT):
+                        rospy.signal_shutdown("Sonar sensor not ready")
 
             # Keep the frequency.
             node.sleep()
