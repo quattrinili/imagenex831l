@@ -91,7 +91,7 @@ class SonarNode(object):
                 # For logging purpose.
                 rospy.logdebug(sonar_raw_msg)
 
-                sonar_msg.header.stamp = time
+                sonar_msg.header.stamp = current_time
                 sonar_msg.header.frame_id = "sonar"
                 self.sensor.interpret_data(raw_data, sonar_msg)
 
