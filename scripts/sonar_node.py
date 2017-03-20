@@ -28,7 +28,7 @@ SONAR_RAW_TOPIC_NAME = 'range_raw'
 
 
 # Parameters for node.
-POLL_FREQUENCY = 100 # Frequency for polling data. Note that the lower bound
+POLL_FREQUENCY = 1000 # Frequency for polling data. Note that the lower bound
                     # depends on the actual sensor frequency. TODO frequency depending on range.
 RESET_TIMEOUT = 1 # Timeout (s) to reset node, if no message has been produced.
 # END MACROS.
