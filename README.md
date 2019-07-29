@@ -1,10 +1,23 @@
-# To create udev rules for the ft232h.
-rosrun depth_node_py create_udev_rules
+# imagenex831l
 
-# To run the node.
-rosrun depth_node_py run_node.sh
+ROS driver for the [IMAGENEX831L](https://imagenex.com/products/831l-pipe-profiling).
 
-# Disable password.
-# http://askubuntu.com/questions/147241/execute-sudo-without-password
-Add 
-afrl ALL=(ALL) NOPASSWD: ALL
+## Getting started
+
+### Prerequisites
+
+Set the IP address of the computer connected to the sensor.
+
+### Running
+```
+roslaunch imagenex831l sonar.launch
+```
+
+## Authors
+
+* [Alberto Quattrini Li](https://sites.google.com/view/albertoq) - [Reality and Robotics Lab](https://rlab.cs.dartmouth.edu), Dartmouth College
+* Sharmin Rahman - [Autonomous Field Robotics Lab](https://afrl.cse.sc.edu), University of South Carolina
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
